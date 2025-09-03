@@ -1,34 +1,45 @@
-name: Dev Docker Build
+name: Dev Docker Build & Vercel Deploy
 
 on:
   push:
     branches:
-      - dev  # Only trigger on dev branch
+      - dev
 
 jobs:
-  build-and-push:
+  build-push-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️. Checkout code
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      # 1️⃣ Checkout code
+      - uses: actions/checkout@v4
 
-      # 2️. Log in to Docker Hub
-      - name: Log in to Docker Hub
+      # 2️⃣ Log in to Docker Hub (private repo)
+      - name: Docker login
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      # 3️. Set Docker tag to first 7 chars of commit SHA
+      # 3️⃣ Set Docker tag to first 7 chars of commit SHA
       - name: Set Docker tag
         run: echo "DOCKER_TAG=${GITHUB_SHA::7}" >> $GITHUB_ENV
 
-      # 4️. Build Docker image
+      # 4️⃣ Build Docker image
       - name: Build Docker image
         run: docker build -t hr72/hr-news:${DOCKER_TAG} .
 
-      # 5️. Push Docker image
+      # 5️⃣ Push Docker image to private Docker Hub
       - name: Push Docker image
         run: docker push hr72/hr-news:${DOCKER_TAG}
+
+      # 6️⃣ Install Vercel CLI
+      - name: Install Vercel CLI
+        run: npm i -g vercel
+
+      # 7️⃣ Deploy to Vercel
+      - name: Deploy to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
+        run: |
+          vercel --token $VERCEL_TOKEN --confirm --env NEWS_API_KEY=$NEWS_API_KEY
