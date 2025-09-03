@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The News</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="top-bar">
+        <span>{{ today }}</span>
+        <span class="menu">HR</span>
+      </div>
+      <h1 class="logo">TheNEWS</h1>
+      <nav>
+        <a href="#">World News</a>
+        <a href="#">Politics</a>
+        <a href="#">Business</a>
+        <a href="#">Technology</a>
+        <a href="#">Health</a>
+        <a href="#">Sports</a>
+        <a href="#">Culture</a>
+        <a href="#">Podcast</a>
+      </nav>
+    </header>
+
+    <!-- Categories -->
+    <section class="latest-news">
+      <h2>Bullet News</h2>
+      <section class="categories">
+        <div class="cards-container">
+          <div class="category-card">
+            <img src="{{ category_cards['business']['urlToImage'] or url_for('static', filename='images/tax.png') }}" 
+                 alt="{{ category_cards['business']['title'] or 'Business News' }}" />
+            <div class="card-content">
+              <span class="tag world">Business</span>
+              <h3>{{ category_cards['business']['title'] or 'No Title' }}</h3>
+              <p>{{ category_cards['business']['description'] or 'No Description Available.' }}</p>
+              <a href="{{ category_cards['business']['url'] or '#' }}" target="_blank" rel="noopener noreferrer" class="read-more">Read More →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="category-card">
+          <img src="{{ category_cards['technology']['urlToImage'] or url_for('static', filename='images/robot.png') }}" 
+               alt="{{ category_cards['technology']['title'] or 'Technology' }}" />
+          <div class="card-content">
+            <span class="tag tech">Technology</span>
+            <h3>{{ category_cards['technology']['title'] or 'No Title' }}</h3>
+            <p>{{ category_cards['technology']['description'] or 'No Description Available.' }}</p>
+            <a href="{{ category_cards['technology']['url'] or '#' }}" target="_blank" rel="noopener noreferrer" class="read-more">Read More →</a>
+          </div>
+        </div>
+
+        <div class="category-card">
+          <img src="{{ category_cards['health']['urlToImage'] or url_for('static', filename='images/politics.png') }}" 
+               alt="{{ category_cards['health']['title'] or 'Health' }}" />
+          <div class="card-content">
+            <span class="tag health">Health</span>
+            <h3>{{ category_cards['health']['title'] or 'No Title' }}</h3>
+            <p>{{ category_cards['health']['description'] or 'No Description Available.' }}</p>
+            <a href="{{ category_cards['health']['url'] or '#' }}" target="_blank" rel="noopener noreferrer" class="read-more">Read More →</a>
+          </div>
+        </div>
+
+        <div class="category-card">
+          <img src="{{ category_cards['sports']['urlToImage'] or url_for('static', filename='images/cricket.png') }}" 
+               alt="{{ category_cards['sports']['title'] or 'Sports' }}" />
+          <div class="card-content">
+            <span class="tag sports">Sports</span>
+            <h3>{{ category_cards['sports']['title'] or 'No Title' }}</h3>
+            <p>{{ category_cards['sports']['description'] or 'No Description Available.' }}</p>
+            <a href="{{ category_cards['sports']['url'] or '#' }}" target="_blank" rel="noopener noreferrer" class="read-more">Read More →</a>
+          </div>
+        </div>
+
+      </section>
+    </section>
+
+    <!-- Main + Grid + Side Articles -->
+    <section class="latest-news">
+      <h2>Latest News</h2>
+      <div class="news-container">
+        <!-- Left Column (Main Article + Grid) -->
+        <div class="left-column">
+          <!-- Main Article -->
+          <div class="main-article">
+            <img
+              src="{{ all_articles.main_article.urlToImage or url_for('static', filename='images/placeholder.png') }}"
+              alt="{{ all_articles.main_article.title or 'Main News' }}"
+            />
+            <div class="main-content">
+              <span class="kicker">{{ all_articles.main_article.category|upper }}</span>
+              <h2>{{ all_articles.main_article.title or "No title available" }}</h2>
+              <p class="author">
+                by {{ all_articles.main_article.author or "Unknown" }} - {{ all_articles.main_article.publishedAt[:10] if all_articles.main_article.publishedAt else "" }}
+              </p>
+              <p>{{ all_articles.main_article.description or "No description available." }}</p>
+              <a
+                href="{{ all_articles.main_article.url or '#' }}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="read-more"
+              >Read More →</a>
+            </div>
+          </div>
+
+          <!-- 2x2 Grid -->
+          <div class="news-grid">
+            {% for article in all_articles.grid_articles %}
+            <div class="grid-card">
+              <img src="{{ article.urlToImage or url_for('static', filename='images/placeholder.png') }}" alt="{{ article.title or 'News Image' }}" />
+              <div class="grid-content">
+                <span class="kicker">{{ article.category|upper }}</span>
+                <h4>{{ article.title or "No title available" }}</h4>
+                <p>{{ article.description or "No description available." }}</p>
+                <a href="{{ article.url or '#' }}" target="_blank" rel="noopener noreferrer" class="read-more">Read More →</a>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Right Column (6 Side Articles) -->
+        <div class="side-articles">
+          {% for article in all_articles.side_articles %}
+          <div class="side-article">
+            <img src="{{ article.urlToImage or url_for('static', filename='images/placeholder.png') }}" alt="{{ article.title or 'Side News' }}" />
+            <div class="side-content">
+              <span class="kicker">{{ article.category|upper }}</span>
+              <h4>{{ article.title or "No title available" }}</h4>
+              <p class="date">{{ article.publishedAt[:10] if article.publishedAt else "" }}</p>
+              <p>{{ article.description or "No description available." }}</p>
+              <a href="{{ article.url or '#' }}" target="_blank" rel="noopener noreferrer" class="read-more">Read More →</a>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
