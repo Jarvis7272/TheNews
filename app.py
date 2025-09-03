@@ -1,13 +1,18 @@
+import random
+import os
 from flask import Flask, render_template
 from datetime import datetime, timedelta
 from newsapi import NewsApiClient
-import random
 from urllib.parse import urlparse
 
 app = Flask(__name__)
 
 # Init NewsAPI client
-newsapi = NewsApiClient(api_key="29f6df0c8a13495787c2980857314267")
+api_key = os.getenv("NEWS_API_KEY")
+if not api_key:
+    raise ValueError("NEWS_API_KEY not set in environment variables")
+newsapi = NewsApiClient(api_key=api_key)
+
 
 # Cache raw API data
 cached_raw_articles = None
