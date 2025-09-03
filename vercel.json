@@ -1,0 +1,6 @@
+{
+  "name": "hr-news-dev",
+  "builds": [
+    { "src": "Dockerfile", "use": "@vercel/docker" }
+  ]
+}
