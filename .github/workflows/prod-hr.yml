@@ -1,0 +1,37 @@
+name: Prod Vercel Deploy
+
+on:
+  push:
+    branches:
+      - main  # or 'prod' if you have a separate branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout code (optional if using only image)
+      - uses: actions/checkout@v4
+
+      # 2️⃣ Log in to Docker Hub (private repo)
+      - name: Docker login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      # 3️⃣ Pull the latest Docker image (from dev tag)
+      - name: Pull Docker image
+        run: docker pull hr72/hr-news:<SHA-or-latest-tag>
+
+      # 4️⃣ Install Vercel CLI
+      - name: Install Vercel CLI
+        run: npm i -g vercel
+
+      # 5️⃣ Deploy to Vercel
+      - name: Deploy to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
+        run: |
+          vercel --prod --token $VERCEL_TOKEN --confirm --env NEWS_API_KEY=$NEWS_API_KEY
