@@ -8,7 +8,6 @@ on:
 jobs:
   GitHub-CI:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -33,8 +32,10 @@ jobs:
           docker push hr72/hr-news:${DOCKER_TAG}
           docker push hr72/hr-news:latest
 
-GitHub-CD:
-      # Trigger Render Deploy
+  GitHub-CD:
+    runs-on: ubuntu-latest
+    needs: GitHub-CI   # ensures CD runs only after CI succeeds
+    steps:
       - name: Trigger Render Deploy
         run: |
           curl -X POST "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys" \
