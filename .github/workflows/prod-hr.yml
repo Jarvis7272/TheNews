@@ -1,4 +1,4 @@
-name: Prod Vercel Deploy
+name: Prod Deploy
 
 on:
   push:
@@ -22,16 +22,4 @@ jobs:
 
       # 3️⃣ Pull the latest Docker image (from dev tag)
       - name: Pull Docker image
-        run: docker pull hr72/hr-news:<SHA-or-latest-tag>
-
-      # 4️⃣ Install Vercel CLI
-      - name: Install Vercel CLI
-        run: npm i -g vercel
-
-      # 5️⃣ Deploy to Vercel
-      - name: Deploy to Vercel
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
-        run: |
-          vercel --prod --token $VERCEL_TOKEN --confirm --env NEWS_API_KEY=$NEWS_API_KEY
+        run: docker pull hr72/hr-news:4401c41
