@@ -13,7 +13,6 @@ if not api_key:
     raise ValueError("NEWS_API_KEY not set in environment variables")
 newsapi = NewsApiClient(api_key=api_key)
 
-
 # Cache raw API data
 cached_raw_articles = None
 cache_time = None
