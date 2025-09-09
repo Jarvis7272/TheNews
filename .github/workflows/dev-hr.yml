@@ -30,7 +30,6 @@ jobs:
       - name: Push Docker image
         run: |
           docker push hr72/hr-news:${DOCKER_TAG}
-          docker push hr72/hr-news:latest
 
   GitHub-CD:
     runs-on: ubuntu-latest
