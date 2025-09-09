@@ -1,4 +1,4 @@
-name: Dev Docker Build & Vercel Deploy
+name: Dev Docker Build & Render Deploy
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - dev
 
 jobs:
-  build-push-deploy:
+  GitHub-CI:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,26 +19,25 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      # Set Docker tag
+      # Set Docker tag (short git SHA)
       - name: Set Docker tag
         run: echo "DOCKER_TAG=${GITHUB_SHA::7}" >> $GITHUB_ENV
 
       # Build Docker image
       - name: Build Docker image
-        run: docker build -t hr72/hr-news:${DOCKER_TAG} .
+        run: docker build -t hr72/hr-news:${DOCKER_TAG} -t hr72/hr-news:latest .
 
-      # Push Docker image
+      # Push Docker image (both SHA + latest)
       - name: Push Docker image
-        run: docker push hr72/hr-news:${DOCKER_TAG}
-
-      # Install Vercel CLI
-      - name: Install Vercel CLI
-        run: npm i -g vercel
-
-      # Deploy to Vercel (dev)
-      - name: Deploy to Vercel
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
         run: |
-            vercel --token $VERCEL_TOKEN --yes --env NEWS_API_KEY=$NEWS_API_KEY
+          docker push hr72/hr-news:${DOCKER_TAG}
+          docker push hr72/hr-news:latest
+
+GitHub-CD:
+      # Trigger Render Deploy
+      - name: Trigger Render Deploy
+        run: |
+          curl -X POST "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys" \
+          -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+          -H "Accept: application/json" \
+          -H "Content-Type: application/json"
