@@ -6,7 +6,7 @@ on:
       - dev
 
 jobs:
-  build-push-deploy:
+  GitHub-CI:
     runs-on: ubuntu-latest
 
     steps:
@@ -32,7 +32,7 @@ jobs:
         run: |
           docker push hr72/hr-news:${DOCKER_TAG}
           docker push hr72/hr-news:latest
-
+GitHub-CD:
       # Trigger Render Deploy
       - name: Trigger Render Deploy
         run: |
