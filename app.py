@@ -16,7 +16,7 @@ newsapi = NewsApiClient(api_key=api_key)
 # Cache raw API data
 cached_raw_articles = None
 cache_time = None
-CACHE_DURATION = timedelta(minutes=10)
+CACHE_DURATION = timedelta(minutes=10)      
 
 # --- Utility: safe URL filter ---
 def safe_url(url):
@@ -85,4 +85,5 @@ def home():
     )
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host="0.0.0.0", port=port)
